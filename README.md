@@ -88,7 +88,7 @@ $ python app.py
 	- 重新輸入數字
 	![](https://upload.cc/i1/2022/12/23/92lqbA.jpg)
 	![](https://upload.cc/i1/2022/12/23/34LWPF.jpg)
-	- 重新輸入文字
+	- 重新輸入名字
 	![](https://upload.cc/i1/2022/12/23/GTor07.jpg)
 	![](https://upload.cc/i1/2022/12/23/u7pknm.jpg)
 
@@ -117,6 +117,3 @@ $ python app.py
 ![開心狗狗](https://www.newsweek.com/golden-retriever-hectic-morning-routine-wakes-owners-viral-1741182)
 
 ![狗狗](https://www.doggiejogs.com/about-us)
-=======
-# linebot
->>>>>>> 12e52fdad6a8f55fad6c9a128b21bdd41a683fef
