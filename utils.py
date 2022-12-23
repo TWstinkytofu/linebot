@@ -4,7 +4,7 @@ from linebot import LineBotApi, WebhookParser
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 
-channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
+channel_access_token = "your channel_access_token"
 
 
 def send_text_message(reply_token, text):
@@ -13,6 +13,11 @@ def send_text_message(reply_token, text):
 
     return "OK"
 
+def send_text_message_type2(reply_token, text):
+    line_bot_api = LineBotApi(channel_access_token)
+    line_bot_api.reply_message(reply_token, text)
+
+    return "OK"
 
 """
 def send_image_url(id, img_url):

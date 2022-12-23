@@ -1,159 +1,118 @@
-# TOC Project 2020
+#  阿金不會忘記
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/dc7fa47fcd809b99d087/maintainability)](https://codeclimate.com/github/NCKU-CCS/TOC-Project-2020/maintainability)
+## 動機
+日常生活中有時會發生一些很令人生氣的事情要抱怨時想不起來，或是受到別人的幫忙怕忘記有點不好意思，所以就打算設計一個可以針對事件類型、對象進行分類的機器人將發生的事情記錄下來，在未來要想要回憶時可以想到更多細節。
 
-[![Known Vulnerabilities](https://snyk.io/test/github/NCKU-CCS/TOC-Project-2020/badge.svg)](https://snyk.io/test/github/NCKU-CCS/TOC-Project-2020)
+## 加入帳號
+掃描下方QR code即可加入
 
+![](https://upload.cc/i1/2022/12/23/6YEhcW.jpg)
 
-Template Code for TOC Project 2020
+## 環境
+- ubuntu 22.04
+- python 3.6.15
+- ngrok
+- pipenv
 
-A Line bot based on a finite state machine
+## 環境設定
+1. install 所需套件及開啟虛擬環境
 
-More details in the [Slides](https://hackmd.io/@TTW/ToC-2019-Project#) and [FAQ](https://hackmd.io/s/B1Xw7E8kN)
+```shell
+$ pipenv install --three
+$ pipenv install
+$ pipenv shell
+```
+2. 安裝`graphviz`
 
-## Setup
-
-### Prerequisite
-* Python 3.6
-* Pipenv
-* Facebook Page and App
-* HTTPS Server
-
-#### Install Dependency
-```sh
-pip3 install pipenv
-
-pipenv --three
-
-pipenv install
-
-pipenv shell
+```shell
+$ sudo apt-get install graphviz graphviz-dev
 ```
 
-* pygraphviz (For visualizing Finite State Machine)
-    * [Setup pygraphviz on Ubuntu](http://www.jianshu.com/p/a3da7ecc5303)
-	* [Note: macOS Install error](https://github.com/pygraphviz/pygraphviz/issues/100)
+3. 從`Line Developers`找到`LINE_CHANNEL_SECRET`及`INE_CHANNEL_ACCESS_TOKEN`，並填入至app.py及utils.py中
 
+- Line
+    - LINE_CHANNEL_SECRET
+    - LINE_CHANNEL_ACCESS_TOKEN
 
-#### Secret Data
-You should generate a `.env` file to set Environment Variables refer to our `.env.sample`.
-`LINE_CHANNEL_SECRET` and `LINE_CHANNEL_ACCESS_TOKEN` **MUST** be set to proper values.
-Otherwise, you might not be able to run your code.
+- LINE_CHANNEL_SECRET:
+![](https://upload.cc/i1/2022/12/23/cPMQvk.jpg)
+- LINE_CHANNEL_ACCESS_TOKEN
+![](https://upload.cc/i1/2022/12/23/YXR50w.jpg)
 
-#### Run Locally
-You can either setup https server or using `ngrok` as a proxy.
-
-#### a. Ngrok installation
-* [ macOS, Windows, Linux](https://ngrok.com/download)
-
-or you can use Homebrew (MAC)
-```sh
-brew cask install ngrok
+4. 利用 `ngrok` 產生https網址
+```shell
+$ ngrok http 8000
 ```
 
-**`ngrok` would be used in the following instruction**
+將ngrok中`Forwarding`內的網址複製至Line developers(須加上`/webhook`))
+- Line Developers
+![](https://upload.cc/i1/2022/12/23/jQbZm1.jpg)
 
-```sh
-ngrok http 8000
+5. 執行程式
+```shell
+$ python app.py
 ```
 
-After that, `ngrok` would generate a https URL.
+## 使用說明
+- 開啟菜單：
+    - 初次使用機器人時，可輸入menu開啟菜單（輸入任何文字軍會開啟菜單）
+    - 當輸入不符合格式的文字時會跳回到菜單
+	- 開啟菜單後可依據需求選擇新增、刪除、修改、及查看
+- 錯誤格式：
+	- 在刪除或修改時，輸入未紀錄的名字
+	- 選擇事件時，輸入非阿拉伯數字或不在範圍內的數字
+- 重新輸入：
+	- 當因輸入錯誤格式回到menu時，可透過輸入`"返回 <正確名字/數字>"`來重新輸入名字或數字
 
-#### Run the sever
+## 使用示範
+- 呼叫菜單：
+	- ![](https://upload.cc/i1/2022/12/23/WM8qSz.jpg)
 
-```sh
-python3 app.py
-```
+- 新增：
+	- 新增壞事（點擊記仇- 再添一筆）: ![](https://upload.cc/i1/2022/12/23/9UlTxM.jpg)
+	- 新增好事（點擊記恩- 再添一筆）: ![](https://upload.cc/i1/2022/12/23/CsgAOG.jpg)
 
-#### b. Servo
+- 查看：
+	- 查看壞事（點擊翻小本本- 有仇報仇）:![](https://upload.cc/i1/2022/12/23/Jum7MC.jpg) 
+	- 查看特定對象 （點擊翻小本本 接著輸入名字）：![](https://upload.cc/i1/2022/12/23/TUM3tS.jpg)
 
-Or You can use [servo](http://serveo.net/) to expose local servers to the internet.
+- 刪除：
+	- 刪除特定事件 （點擊記仇/記功 接著輸入名字、數字）：![](https://upload.cc/i1/2022/12/23/38iPYU.jpg)
+
+- 修改：
+	- 修改特定事件 （點擊記仇/記功 接著輸入名字、數字 最後輸入要修改的內容）：![](https://upload.cc/i1/2022/12/23/tIE8eQ.jpg)
 
 
-## Finite State Machine
-![fsm](./img/show-fsm.png)
+- 利用返回重新輸入：
+	- 重新輸入數字
+	![](https://upload.cc/i1/2022/12/23/92lqbA.jpg)
+	![](https://upload.cc/i1/2022/12/23/34LWPF.jpg)
+	- 重新輸入文字
+	![](https://upload.cc/i1/2022/12/23/GTor07.jpg)
+	![](https://upload.cc/i1/2022/12/23/u7pknm.jpg)
 
-## Usage
-The initial state is set to `user`.
 
-Every time `user` state is triggered to `advance` to another state, it will `go_back` to `user` state after the bot replies corresponding message.
+## FSM
+![](https://upload.cc/i1/2022/12/23/DUGfwb.png)
+### state說明
+- user: 輸入menu開始呼叫菜單（輸入任何文字均會呼叫菜單）
+- menu: 顯示菜單，提供使用者選擇操作類型及事件類型
+- name: 輸入所要新增、刪除、查看、或修改的對象名字
+- list: 顯示所指定名字有哪些事件
+- Create_things: 紀錄使用者輸入的名字、讓使用者輸入所要新增事件的內容
+- Update_choose: 紀錄使用者指定的事件、讓使用者輸入所要修改事件的內容
+- Delete: 刪除指定的事件
+- Update: 將指定事件的內容修改為輸入的內容
+- Create: 將使用者、事件類型、名字、事件內容紀錄下來
+- Read: 顯示所有與"name"時輸入的名字相同的事件
+- things: 顯示所有與選擇事件類型相同的事件
 
-* user
-	* Input: "go to state1"
-		* Reply: "I'm entering state1"
 
-	* Input: "go to state2"
-		* Reply: "I'm entering state2"
+## 參考圖源
+![大頭照](https://www.youtube.com/watch?v=RdsWevZ3PpI)
 
-## Deploy
-Setting to deploy webhooks on Heroku.
+![生氣狗狗](https://www.freepik.com/free-photo/angry-golden-retriever-dog_1254358.htm)
 
-### Heroku CLI installation
+![開心狗狗](https://www.newsweek.com/golden-retriever-hectic-morning-routine-wakes-owners-viral-1741182)
 
-* [macOS, Windows](https://devcenter.heroku.com/articles/heroku-cli)
-
-or you can use Homebrew (MAC)
-```sh
-brew tap heroku/brew && brew install heroku
-```
-
-or you can use Snap (Ubuntu 16+)
-```sh
-sudo snap install --classic heroku
-```
-
-### Connect to Heroku
-
-1. Register Heroku: https://signup.heroku.com
-
-2. Create Heroku project from website
-
-3. CLI Login
-
-	`heroku login`
-
-### Upload project to Heroku
-
-1. Add local project to Heroku project
-
-	heroku git:remote -a {HEROKU_APP_NAME}
-
-2. Upload project
-
-	```
-	git add .
-	git commit -m "Add code"
-	git push -f heroku master
-	```
-
-3. Set Environment - Line Messaging API Secret Keys
-
-	```
-	heroku config:set LINE_CHANNEL_SECRET=your_line_channel_secret
-	heroku config:set LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
-	```
-
-4. Your Project is now running on Heroku!
-
-	url: `{HEROKU_APP_NAME}.herokuapp.com/callback`
-
-	debug command: `heroku logs --tail --app {HEROKU_APP_NAME}`
-
-5. If fail with `pygraphviz` install errors
-
-	run commands below can solve the problems
-	```
-	heroku buildpacks:set heroku/python
-	heroku buildpacks:add --index 1 heroku-community/apt
-	```
-
-	refference: https://hackmd.io/@ccw/B1Xw7E8kN?type=view#Q2-如何在-Heroku-使用-pygraphviz
-
-## Reference
-[Pipenv](https://medium.com/@chihsuan/pipenv-更簡單-更快速的-python-套件管理工具-135a47e504f4) ❤️ [@chihsuan](https://github.com/chihsuan)
-
-[TOC-Project-2019](https://github.com/winonecheng/TOC-Project-2019) ❤️ [@winonecheng](https://github.com/winonecheng)
-
-Flask Architecture ❤️ [@Sirius207](https://github.com/Sirius207)
-
-[Line line-bot-sdk-python](https://github.com/line/line-bot-sdk-python/tree/master/examples/flask-echo)
+![狗狗](https://www.doggiejogs.com/about-us)

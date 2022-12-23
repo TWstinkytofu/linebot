@@ -12,23 +12,89 @@ from utils import send_text_message
 
 load_dotenv()
 
-
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=["user","menu", "Create_things","Delete","Update","list","Update_choose","Read","Create","things","name"],
     transitions=[
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "dest": "menu",
         },
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "source": "menu",
+            "dest": "name",
+            "conditions": "is_going_to_name",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "things",
+            "conditions": "is_going_to_things",
+        },
+        {
+            "trigger": "advance",
+            "source": "name",
+            "dest": "list",
+            "conditions": "is_going_to_list",
+        },
+        {
+            "trigger": "advance",
+            "source": "list",
+            "dest": "Delete",
+            "conditions": "is_going_to_Delete",
+        },
+        {
+            "trigger": "advance",
+            "source": "list",
+            "dest": "Update_choose",
+            "conditions": "is_going_to_Update_choose",
+        },
+        {
+            "trigger": "advance",
+            "source": "name",
+            "dest": "Create_things",
+            "conditions": "is_going_to_Create_things",
+        },
+        {
+            "trigger": "advance",
+            "source": "name",
+            "dest": "Read",
+            "conditions": "is_going_to_Read",
+        },
+        {
+            "trigger": "advance",
+            "source": "Create_things",
+            "dest": "Create",
+        },
+        {
+            "trigger": "advance",
+            "source": "Update_choose",
+            "dest": "Update",
+        },
+        {   "trigger": "error", 
+            "source": ["menu","list","name","Update_choose"],
+            "dest": "menu"
+        },
+        {   "trigger": "show_menu", 
+            "source": ["things","Delete","Update","Read","Create"],
+            "dest": "menu"
+        },
+        {   "trigger": "advance", 
+            "source": "menu",
+            "dest": "list",
+            "conditions": "go_back_list"
+        },
+        {   "trigger": "advance", 
+            "source": "menu",
+            "dest": "Update_choose",
+            "conditions": "go_back_Update_choose"
+        },
+        {   "trigger": "advance", 
+            "source": "menu",
+            "dest": "Delete",
+            "conditions": "go_back_Delete"
+        },
     ],
     initial="user",
     auto_transitions=False,
@@ -39,8 +105,8 @@ app = Flask(__name__, static_url_path="")
 
 
 # get channel_secret and channel_access_token from your environment variable
-channel_secret = os.getenv("LINE_CHANNEL_SECRET", None)
-channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
+channel_secret = "your channel_secret"
+channel_access_token = "your channel_access_token"
 if channel_secret is None:
     print("Specify LINE_CHANNEL_SECRET as environment variable.")
     sys.exit(1)
@@ -50,33 +116,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-
-
-@app.route("/callback", methods=["POST"])
-def callback():
-    signature = request.headers["X-Line-Signature"]
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # parse webhook body
-    try:
-        events = parser.parse(body, signature)
-    except InvalidSignatureError:
-        abort(400)
-
-    # if event is MessageEvent and message is TextMessage, then echo text
-    for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
-
-    return "OK"
 
 
 @app.route("/webhook", methods=["POST"])
@@ -101,10 +140,13 @@ def webhook_handler():
         if not isinstance(event.message.text, str):
             continue
         print(f"\nFSM STATE: {machine.state}")
-        print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
+        print(f"\nFSM STATE: {machine.state}")
         if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+            machine.error(event)
+            machine.set_error()
+            send_text_message(event.reply_token, "Back to menu")
+        machine.show_menu(event)
 
     return "OK"
 
