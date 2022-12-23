@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #  阿金不會忘記
 
 ## 動機
@@ -116,3 +117,6 @@ $ python app.py
 ![開心狗狗](https://www.newsweek.com/golden-retriever-hectic-morning-routine-wakes-owners-viral-1741182)
 
 ![狗狗](https://www.doggiejogs.com/about-us)
+=======
+# linebot
+>>>>>>> 12e52fdad6a8f55fad6c9a128b21bdd41a683fef
